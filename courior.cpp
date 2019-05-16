@@ -180,10 +180,14 @@ bool Courior::check_feasible(PointOrder origin, PointOrder dest)
 	}
 	PointOrder p = origin->next;
 	//����������
-	if (origin->current_weight > 140)
+	if (origin->current_weight > CAPACITY)
+	{
 		return false;
+	}
 	if (origin->depart_time > origin->package->end_time)
+	{
 		return false;
+	}
 	if (!Order::check_order(origin->package->id))
 	{
 		if (origin->depart_time > origin->package->start_time)
@@ -195,8 +199,10 @@ bool Courior::check_feasible(PointOrder origin, PointOrder dest)
 	while ((p != dest->next) && (p != dest))
 	{
 		//����������������
-		if (p->current_weight + origin->package->weight > 140)
+		if (p->current_weight + origin->package->weight > CAPACITY)
+		{
 			return false;
+		}
 		int new_dep = p->depart_time;
 		//��������������뿪ʱ��
 		if (Order::check_order(p->package->id))
@@ -212,7 +218,16 @@ bool Courior::check_feasible(PointOrder origin, PointOrder dest)
 				new_dep += delta;
 				//��鲢������붩�����Ƿ��ú�����oto�������յ�����ͷ�
 				if (new_dep - p->package->service_time() > p->package->end_time)
-					penalty += 5 * (new_dep - p->package->service_time() - p->package->end_time);
+				{
+					if (ALLOW_LATENESS)
+					{
+						penalty += 5 * (new_dep - p->package->service_time() - p->package->end_time);
+					}
+					else
+					{
+						return false;
+					}
+				}
 			}
 			else
 			{
@@ -233,15 +248,24 @@ bool Courior::check_feasible(PointOrder origin, PointOrder dest)
 		}
 		//�������������뿪ʱ��
 		if (new_dep > p->package->end_time)
+		{
 			return false;
+		}
 		p = p->next;
 	}
 	dest->Dst = dest->Dst_calc(dest->prior_dis, dest->depart_time + delta, 0.5, 0.5);
 	//����յ���뿪ʱ��
-	if (dest->depart_time + delta > dest->package->end_time)
-		return false;
-	if (dest->depart_time - dest->package->service_time() > dest->package->end_time)
-		penalty += 5 * (dest->depart_time - dest->package->service_time() - dest->package->end_time);
+	if (dest->depart_time + delta - dest->package->service_time() > dest->package->end_time)
+	{
+		if (ALLOW_LATENESS)
+		{
+			penalty += 5 * (dest->depart_time + delta - dest->package->service_time() - dest->package->end_time);
+		}
+		else
+		{
+			return false;
+		}
+	}
 	if (dest->next != NULL)
 	{
 		//��������յ��Ժ���������Ӱ��delta������delta
@@ -272,7 +296,16 @@ bool Courior::check_feasible(PointOrder origin, PointOrder dest)
 				new_dep += delta;
 				//��鲢������붩�����Ƿ��ú�����oto�������յ�����ͷ�
 				if (new_dep - p->package->service_time() > p->package->end_time)
-					penalty += 5 * (new_dep - p->package->service_time() - p->package->end_time);
+				{
+					if (ALLOW_LATENESS)
+					{
+						penalty += 5 * (new_dep - p->package->service_time() - p->package->end_time);
+					}
+					else
+					{
+						return false;
+					}
+				}
 			}
 			else
 			{
@@ -287,12 +320,16 @@ bool Courior::check_feasible(PointOrder origin, PointOrder dest)
 				}
 				//��鲢������붩�����Ƿ��ú�����oto�������������ͷ�
 				if (new_dep > p->package->start_time)
+				{
 					penalty += 5 * (new_dep - p->package->start_time);
+				}
 			}
 			delta = new_dep - old_dep;
 		}
 		if (new_dep > p->package->end_time)
+		{
 			return false;
+		}
 		if (p->next == NULL)
 		{
 			//����ǰ�ڵ�Ϊβ�ڵ�,���¼���뿪ʱ��
@@ -309,7 +346,9 @@ bool Courior::check_feasible(PointOrder origin, PointOrder dest)
 			if (p->type)
 			{
 				if (p->depart_time - p->package->service_time() > p->package->end_time)
+				{
 					penalty += 5 * (p->depart_time - p->package->service_time() - p->package->end_time);
+				}
 			}
 			else
 			{
@@ -329,7 +368,9 @@ bool Courior::check_feasible(PointOrder origin, PointOrder dest)
 int Courior::bound_calc(PointOrder order)
 {
 	if (path->head == NULL)
+	{
 		return 0;
+	}
 	double o_min = MAX_DS, d_min = MAX_DS;
 	int wt = 0, bound = 0;
 	PointOrder p = path->head;
@@ -591,11 +632,13 @@ void Courior::path_update()
 bool Courior::check_feasible_updated()
 {
 	PointOrder p = this->path->head;
-	if (this->path->tail->depart_time > 720)
+	if (this->path->tail->depart_time > WORK_TIME)
+	{
 		return false;
+	}
 	while (p != NULL)
 	{
-		if (p->current_weight > 140)
+		if (p->current_weight > CAPACITY)
 			return false;
 		if (p->depart_time > p->package->end_time)
 			return false;
@@ -646,7 +689,7 @@ double Courior::get_load()
 	{
 		if (p->type)
 			order_count++;
-		empty_load_cum += 140 - p->current_weight;
+		empty_load_cum += CAPACITY - p->current_weight;
 		dis_cum += Util::get_distance(p->prior->position, p->position);
 		p = p->next;
 	}

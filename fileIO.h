@@ -8,7 +8,7 @@
 #define NET_NUM 124
 #define SHOP_NUM 613
 #define DELV_NUM 9214
-#define ECO_NUM 0
+#define ECO_NUM 9214
 #define OTO_NUM 3111
 
 class FileIO {

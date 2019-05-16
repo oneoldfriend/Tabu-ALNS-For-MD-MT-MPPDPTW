@@ -5,7 +5,7 @@
 #include<string>
 
 
-#define COURIOR_NUM 2000
+#define COURIOR_NUM 1000
 #define LIST_UPPER 2700
 #define LIST_LOWER 300
 #define MAXCOST 999999
@@ -18,7 +18,7 @@ class Solution {
 public:
 	Courior courior[COURIOR_NUM];
 	Solution();
-	int vehicleNumber, cost, travelTime, waitTime, penalty;
+	int vehicleNumber, cost, travelTime, waitTime, penalty, idleTime;
 	//��greedy insert��ó�ʼ��.
 	void get_initial();
 	//�����һ��·����ͷ��㶩������ɾ����

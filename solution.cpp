@@ -27,6 +27,7 @@ Solution::Solution()
 	cost = 0;
 	waitTime = 0;
 	penalty = 0;
+	idleTime = 0;
 }
 
 void Solution::get_initial()
@@ -1535,6 +1536,7 @@ void Solution::calcAttributes()
 	travelTime = 0;
 	waitTime = 0;
 	penalty = 0;
+	idleTime = 0;
 	for (int i = 0; i < COURIOR_NUM; i++)
 	{
 		PointOrder p = this->courior[i].path->head;
@@ -1549,6 +1551,7 @@ void Solution::calcAttributes()
 		cost += this->courior[i].cost;
 		waitTime += this->courior[i].wait_time;
 		penalty += this->courior[i].penalty;
+		idleTime += WORK_TIME - this->courior[i].path->tail->depart_time + this->courior[i].wait_time;
 	}
 	travelTime = cost - waitTime - penalty;
 }

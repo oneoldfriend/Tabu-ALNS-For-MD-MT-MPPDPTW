@@ -17,7 +17,7 @@
 #define seg 1
 #define pure_oprt 0
 #define debug 0
-#define ALNS_THRESHOLD 10
+#define ALNS_THRESHOLD 10000
 #define TABU_THRESHOLD 10
 #define TABU_OPRT 3
 #define TABU_TENURE 20
@@ -25,7 +25,8 @@
 #define MOVE_SIZE_MIN 0.05
 #define ROUTE_OPRT 4
 #define REGRET_K 3
-#define PRUNING_LEVEL 2
+#define PRUNING_LEVEL 0
+#define ALLOW_LATENESS 0
 
 using namespace std;
 
