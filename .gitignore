@@ -1,0 +1,6 @@
+.vscode
+data
+*.txt
+*.csv
+*.d
+*.o
