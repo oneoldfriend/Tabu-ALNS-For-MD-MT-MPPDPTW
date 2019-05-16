@@ -192,7 +192,14 @@ bool Courior::check_feasible(PointOrder origin, PointOrder dest)
 	{
 		if (origin->depart_time > origin->package->start_time)
 		{
-			penalty += 5 * (origin->depart_time - origin->package->start_time);
+			if (ALLOW_START_LATENESS)
+			{
+				penalty += 5 * (origin->depart_time - origin->package->start_time);
+			}
+			else
+			{
+				return false;
+			}
 		}
 	}
 	//���㲢������������󵽲����յ�ǰ�Ķ������������뿪ʱ��
@@ -219,7 +226,7 @@ bool Courior::check_feasible(PointOrder origin, PointOrder dest)
 				//��鲢������붩�����Ƿ��ú�����oto�������յ�����ͷ�
 				if (new_dep - p->package->service_time() > p->package->end_time)
 				{
-					if (ALLOW_LATENESS)
+					if (ALLOW_END_LATENESS)
 					{
 						penalty += 5 * (new_dep - p->package->service_time() - p->package->end_time);
 					}
@@ -242,7 +249,16 @@ bool Courior::check_feasible(PointOrder origin, PointOrder dest)
 				}
 				//��鲢������붩�����Ƿ��ú�����oto�������������ͷ�
 				if (new_dep > p->package->start_time)
-					penalty += 5 * (new_dep - p->package->start_time);
+				{
+					if (ALLOW_START_LATENESS)
+					{
+						penalty += 5 * (new_dep - p->package->start_time);
+					}
+					else
+					{
+						return false;
+					}
+				}
 			}
 			delta = new_dep - old_dep;
 		}
@@ -257,7 +273,7 @@ bool Courior::check_feasible(PointOrder origin, PointOrder dest)
 	//����յ���뿪ʱ��
 	if (dest->depart_time + delta - dest->package->service_time() > dest->package->end_time)
 	{
-		if (ALLOW_LATENESS)
+		if (ALLOW_END_LATENESS)
 		{
 			penalty += 5 * (dest->depart_time + delta - dest->package->service_time() - dest->package->end_time);
 		}
@@ -297,7 +313,7 @@ bool Courior::check_feasible(PointOrder origin, PointOrder dest)
 				//��鲢������붩�����Ƿ��ú�����oto�������յ�����ͷ�
 				if (new_dep - p->package->service_time() > p->package->end_time)
 				{
-					if (ALLOW_LATENESS)
+					if (ALLOW_END_LATENESS)
 					{
 						penalty += 5 * (new_dep - p->package->service_time() - p->package->end_time);
 					}
@@ -321,7 +337,14 @@ bool Courior::check_feasible(PointOrder origin, PointOrder dest)
 				//��鲢������붩�����Ƿ��ú�����oto�������������ͷ�
 				if (new_dep > p->package->start_time)
 				{
-					penalty += 5 * (new_dep - p->package->start_time);
+					if (ALLOW_START_LATENESS)
+					{
+						penalty += 5 * (new_dep - p->package->start_time);
+					}
+					else
+					{
+						return false;
+					}
 				}
 			}
 			delta = new_dep - old_dep;

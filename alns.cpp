@@ -50,7 +50,7 @@ void Alns::alns(int input_eco_num, int input_oto_num, int input_run_num)
 	int data_size = eco_num + oto_num;
 	char soluion[] = {data_size / 1000 + 48, data_size % 1000 / 100 + 48, data_size % 100 / 10 + 48, data_size % 10 + 48, '-', input_run_num + 48, '-', '\0'};
 	string output_solution = "initial.csv";
-	string output_data = "alns-result-for-use.csv";
+	string output_data = "alns-forbid-both.csv";
 	string data_path = "data/";
 	FileIO::netpoint_input(data_path);
 	FileIO::delivery_input(data_path);

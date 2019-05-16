@@ -25,8 +25,9 @@
 #define MOVE_SIZE_MIN 0.05
 #define ROUTE_OPRT 4
 #define REGRET_K 3
-#define PRUNING_LEVEL 0
-#define ALLOW_LATENESS 0
+#define PRUNING_LEVEL 2
+#define ALLOW_END_LATENESS 0
+#define ALLOW_START_LATENESS 0
 
 using namespace std;
 
